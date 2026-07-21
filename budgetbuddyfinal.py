@@ -34,6 +34,7 @@ if not st.session_state.logged_in:
 
         name=st.text_input('Name')
         email=st.text_input('Email')
+        email=email.strip().lower()
         password=st.text_input('Password',type='password')
         confirm_password=st.text_input('Confirm Password',type='password')
         budget=st.number_input('Monthly Budget',min_value=0.0,step=100.0)
@@ -67,6 +68,7 @@ if not st.session_state.logged_in:
     elif auth=='Login':
         st.subheader('🔐 Login')
         email=st.text_input('Email')
+        email=email.strip().lower()
         password=st.text_input('Password', type='password')
 
         if st.button('Login'):
