@@ -461,7 +461,7 @@ else:
 
             if data:
                 df=pd.DataFrame(data)
-                df['Month'] = pd.to_datetime(df['date']).dt.strftime('%b %Y')
+                df['Month']=pd.to_datetime(df['date']).dt.strftime('%b %Y')
                 df=df.groupby('Month',as_index=False)['amount'].sum()
                 df.columns=['Month','Expense']
 
@@ -571,6 +571,20 @@ else:
 
                     else:
                         st.error('Current password is incorrect!')
+                        
+        st.warning('Deleting your account will permanently remove your profile, income records, and expense records. This action cannot be undone.')
+        confirm_delete=st.checkbox('I understand that this action is permanent.')
+        
+        if confirm_delete:
+            if st.button('🗑 Delete My Account', type='primary'):
+                supabase.table("expenses").delete().eq('user_id',uid).execute()
+                supabase.table("income").delete().eq('user_id',uid).execute()
+                supabase.table("users").delete().eq('user_id',uid).execute()
+                st.session_state.logged_in=False
+                st.session_state.user_id=None
+                st.session_state.user_name=''
+                st.success('Your account has been deleted successfully.')
+                st.rerun()
 
                                          
     elif menu=='🚪 Logout':
