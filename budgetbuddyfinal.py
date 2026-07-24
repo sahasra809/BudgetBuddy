@@ -265,7 +265,7 @@ else:
             st.dataframe(df,use_container_width=True)
 
         else:
-            st.info('No expenses added yet.')
+            st.info('💸 No expense records yet! Start by adding your first expense to see charts and insights.')
 
     elif menu=='💵 Add Income':
         st.title('💵 Add Income')
@@ -286,7 +286,7 @@ else:
             else:
                 supabase.table('income').insert({'user_id':uid,'amount':amount,'source':source,'date':str(date)}).execute()
                 st.success('Income added successfully!')
-                st.rerun()
+                
 
         st.markdown('---')
         st.subheader('Recent Income')
@@ -472,7 +472,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
+                st.info('💸 No data yet! Start by adding your first expense to see charts and insights.')
                 
     elif menu=='👤 Profile':
         uid=st.session_state.user_id
