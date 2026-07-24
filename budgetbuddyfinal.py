@@ -251,7 +251,6 @@ else:
             else:
                 supabase.table('expenses').insert({'user_id':uid,'amount':amount,'category':category,'note':note,'date':str(date)}).execute()
                 st.success('Expense added successfully!')
-                time.sleep(1.5)
                 st.rerun()
 
         st.markdown('---')
@@ -287,7 +286,6 @@ else:
             else:
                 supabase.table('income').insert({'user_id':uid,'amount':amount,'source':source,'date':str(date)}).execute()
                 st.success('Income added successfully!')
-                time.sleep(1.5)
                 st.rerun()
 
         st.markdown('---')
