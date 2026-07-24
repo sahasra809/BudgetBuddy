@@ -52,7 +52,7 @@ if not st.session_state.logged_in:
                 st.error('Please fill all fields!')
 
             else:
-                existing=(supabase.table("users").select("email").limit(1).eq("email", email).execute())
+                existing=(supabase.table('users').select('email').limit(1).eq('email', email).execute())
 
                 if existing.data:
                     st.error('Email already registered!')
@@ -60,10 +60,12 @@ if not st.session_state.logged_in:
                 else:
                     hashed_password = bcrypt.hashpw(password.encode(),bcrypt.gensalt()).decode()
 
-                    supabase.table("users").insert({"name": name,"email": email,"password": hashed_password,"monthly_budget": budget}).execute()
+                    supabase.table('users').insert({'name': name,'email': email,'password': hashed_password,'monthly_budget': budget}).execute()
                     st.balloons()
-                    st.success("Account created successfully!")
-                    st.info("You can now login.")
+                    st.success('Account created successfully!')
+                    time.sleep(1.5)
+                    st.info('You can now login.')
+                    time.sleep(1.2)
 
 
     elif auth=='Login':
@@ -86,6 +88,7 @@ if not st.session_state.logged_in:
                     st.session_state.user_id=user_id
                     st.session_state.user_name=user_name
                     st.success("Login successful!")
+                    time.sleep(1.5)
                     st.rerun()
 
                 else:
@@ -114,7 +117,7 @@ else:
         data=supabase.table('users').select('monthly_budget').eq('user_id',uid).execute().data
         budget=0
         if data:
-            budget=float(data[0].get("monthly_budget") or 0)
+            budget=float(data[0].get('monthly_budget') or 0)
 
         savings=total_income-total_expense
 
@@ -192,7 +195,7 @@ else:
             st.line_chart(df.set_index('Month'))
 
         else:
-            st.info('No monthly trend yet.')
+            st.info('💸 No monthly trend yet! Start by adding your first expense to see charts and insights.')
 
         st.markdown('---')
         st.subheader('💡 Insight')
@@ -251,6 +254,7 @@ else:
             else:
                 supabase.table('expenses').insert({'user_id':uid,'amount':amount,'category':category,'note':note,'date':str(date)}).execute()
                 st.success('Expense added successfully!')
+                time.sleep(1.5)
                 st.rerun()
 
         st.markdown('---')
@@ -286,7 +290,8 @@ else:
             else:
                 supabase.table('income').insert({'user_id':uid,'amount':amount,'source':source,'date':str(date)}).execute()
                 st.success('Income added successfully!')
-                
+                time.sleep(1.5)
+                st.rerun()
 
         st.markdown('---')
         st.subheader('Recent Income')
@@ -300,7 +305,7 @@ else:
             st.dataframe(df,use_container_width=True)
 
         else:
-            st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
+            st.info('💸 No income records yet! Start by adding your first income to see charts and insights.')
 
 
     elif menu=='📋 View Transactions':
@@ -329,7 +334,7 @@ else:
                 st.dataframe(df,use_container_width=True)
 
             else:
-                st.info('💸 No transactions yet! Start by adding your first expense to see charts and insights.')
+                st.info('💸 No transactions yet! Start by adding your first expenses and income to see charts and insights.')
 
         elif transaction_type=='Expenses':
             data=supabase.table('expenses').select('transaction_id,amount,category,note,date').eq('user_id',uid).order('date',desc=True).execute().data
@@ -362,10 +367,11 @@ else:
                 if st.button('🗑 Delete Income',type='primary'):
                     supabase.table('income').delete().eq('income_id',selected_id).eq('user_id',uid).execute()
                     st.success('Income deleted successfully!')
+                    time.sleep(1.5)
                     st.rerun()
 
             else:
-                st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
+                st.info('💸 No income records yet! Start by adding your first income to see charts and insights.')
                 
 
     elif menu=='📊 Reports':
@@ -427,7 +433,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No data yet! Start by adding your first expense and income to see charts and insights.')
+                st.info('💸 No data yet! Start by adding your first expenses and income to see charts and insights.')
 
 
         elif report_type=='Savings Analysis':
@@ -455,7 +461,7 @@ else:
                     st.error('Low savings rate.')
 
             else:
-                st.info('💸 No data yet! Start by adding your first income to see charts and insights.')
+                st.info('💸 No data yet! Start by adding your first expenses and income to see charts and insights.')
 
 
         elif report_type=='Monthly Trend':
@@ -472,7 +478,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No data yet! Start by adding your first expense to see charts and insights.')
+                st.info('💸 No data yet! Start by adding your first expenses and incomes to see charts and insights.')
                 
     elif menu=='👤 Profile':
         uid=st.session_state.user_id
@@ -539,6 +545,7 @@ else:
                     supabase.table('users').update({'name':new_name,'monthly_budget':new_budget}).eq('user_id',uid).execute()
                     st.session_state.user_name=new_name
                     st.success('Profile updated successfully!')
+                    time.sleep(1.5)
                     st.rerun()
 
         st.markdown('---')
@@ -569,6 +576,7 @@ else:
                         new_hash=bcrypt.hashpw(new_password.encode(),bcrypt.gensalt()).decode()
                         supabase.table('users').update({'password':new_hash}).eq('user_id',uid).execute()
                         st.success('Password changed successfully!')
+                        time.sleep(1.5)
                         st.rerun()
 
                     else:
@@ -586,6 +594,7 @@ else:
                 st.session_state.user_id=None
                 st.session_state.user_name=''
                 st.success('Your account has been deleted successfully.')
+                time.sleep(1.5)
                 st.rerun()
 
                                          
