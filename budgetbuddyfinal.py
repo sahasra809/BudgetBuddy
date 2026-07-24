@@ -427,7 +427,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                print('💸 No data yet! Start by adding your first expense and income to see charts and insights.')
+                st.info('💸 No data yet! Start by adding your first expense and income to see charts and insights.')
 
 
         elif report_type=='Savings Analysis':
@@ -455,7 +455,7 @@ else:
                     st.error('Low savings rate.')
 
             else:
-                print('💸 No data yet! Start by adding your first income to see charts and insights.')
+                st.info('💸 No data yet! Start by adding your first income to see charts and insights.')
 
 
         elif report_type=='Monthly Trend':
