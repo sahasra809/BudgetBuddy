@@ -26,6 +26,7 @@ if 'user_name' not in st.session_state:
     st.session_state.user_name=''
 
 if not st.session_state.logged_in:
+    st.image('front.jpeg')
     auth = st.radio('',['Login', 'Signup'],horizontal=True)
     st.markdown('---')
 
@@ -88,15 +89,15 @@ if not st.session_state.logged_in:
                     st.rerun()
 
                 else:
-                    st.error("Incorrect password!")
+                    st.error('Incorrect password!')
 
             else:
-                st.error("No account found!")
+                st.error('No account found!')
 
 else:
-    st.sidebar.image('cover1.png',caption='Make smart financial decisions')
-    menu=st.sidebar.selectbox("Menu",["🏠 Dashboard","💸 Add Expense","💵 Add Income","📋 View Transactions",\
-                                      "📊 Reports","👤 Profile","🚪 Logout"])
+    st.sidebar.image('cover.jpeg',caption='Make smart financial decisions')
+    menu=st.sidebar.selectbox('Menu',['🏠 Dashboard','💸 Add Expense','💵 Add Income','📋 View Transactions',\
+                                      '📊 Reports','👤 Profile','🚪 Logout'])
 
     if menu=='🏠 Dashboard':
         uid=st.session_state.user_id
@@ -147,10 +148,10 @@ else:
             st.write(f"{percent:.1f}% of monthly budget used")
 
             if percent < 50:
-                st.success("Great job! Spending is under control 🌟")
+                st.success('Great job! Spending is under control 🌟')
 
             elif percent < 80:
-                st.warning("Budget usage is getting higher 👀")
+                st.warning('Budget usage is getting higher 👀')
 
             elif percent <= 100:
                 st.error("You're close to your budget limit ⚠️")
@@ -163,8 +164,8 @@ else:
 
         data=supabase.table('expenses').select('category,amount').eq('user_id',uid).execute().data
 
-        colors={"Food":"#FF6B6B","Travel":"#4ECDC4","Shopping":"#FFD166","Bills":"#6C5CE7",\
-                "Entertainment":"#F78FB3","Education":"#45B7D1","Health":"#2ECC71","Other":"#95A5A6"}
+        colors={'Food':'#EC7D7E','Transport':'#6A36BC','Shopping':'#1395BA','Bills':'#7F8000',\
+                'Entertainment':'#E5A90C','Education':'#4EAED4','Health':'#2ECA71','Other':'#95A2A6'}
 
         if data:
             df=pd.DataFrame(data)
@@ -216,7 +217,7 @@ else:
                 st.info(f"🎯 Budget remaining: ₹{budget_left:,.2f}")
 
             if total_expense>budget and budget>0:
-                st.error("⚠️ You have exceeded your monthly budget!")
+                st.error('⚠️ You have exceeded your monthly budget!')
 
             percent=(top['amount']/total_expense)*100
             st.info(f"📊 {percent:.1f}% of your expenses were spent on {top['category']}.")
@@ -224,10 +225,10 @@ else:
             if savings>0:
                 st.success("✅ You're spending less than you earn!")
             else:
-                st.error("⚠️ Expenses exceed income.")
+                st.error('⚠️ Expenses exceed income!')
 
         else:
-            st.info('Start adding expenses to get insights.')
+            st.info('Start adding expenses to get insights!')
 
 
     elif menu=='💸 Add Expense':
@@ -246,7 +247,7 @@ else:
 
         if submitted:
             if amount<=0:
-                st.error("Amount must be greater than 0")
+                st.error('Amount must be greater than 0')
             else:
                 supabase.table('expenses').insert({'user_id':uid,'amount':amount,'category':category,'note':note,'date':str(date)}).execute()
                 st.success('Expense added successfully!')
@@ -281,7 +282,7 @@ else:
 
         if submitted:
             if amount<=0:
-                st.error("Amount must be greater than 0")
+                st.error('Amount must be greater than 0!')
             else:
                 supabase.table('income').insert({'user_id':uid,'amount':amount,'source':source,'date':str(date)}).execute()
                 st.success('Income added successfully!')
@@ -299,7 +300,7 @@ else:
             st.dataframe(df,use_container_width=True)
 
         else:
-            st.info('No income records yet.')
+            st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
 
 
     elif menu=='📋 View Transactions':
@@ -328,7 +329,7 @@ else:
                 st.dataframe(df,use_container_width=True)
 
             else:
-                st.info('No transactions found.')
+                st.info('💸 No transactions yet! Start by adding your first expense to see charts and insights.')
 
         elif transaction_type=='Expenses':
             data=supabase.table('expenses').select('transaction_id,amount,category,note,date').eq('user_id',uid).order('date',desc=True).execute().data
@@ -346,7 +347,7 @@ else:
                     st.rerun()
 
             else:
-                st.info('💸 No expenses yet! \nStart by adding your first expense to see charts and insights.')
+                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
 
         elif transaction_type=='Income':
             data=supabase.table('income').select('income_id,amount,source,date').eq('user_id',uid).order('date',desc=True).execute().data
@@ -364,11 +365,11 @@ else:
                     st.rerun()
 
             else:
-                st.info('💸 No income records yet! \nStart by adding your first expense to see charts and insights.')
+                st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
                 
 
     elif menu=='📊 Reports':
-        st.title("📊 Financial Reports")
+        st.title('📊 Financial Reports')
         report_type=st.selectbox('Select Report',['Monthly Summary','Category Analysis','Income vs Expense',\
                                           'Savings Analysis','Monthly Trend'])
         uid=st.session_state.user_id
@@ -408,7 +409,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No expenses yet! \nStart by adding your first expense to see charts and insights.')
+                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
 
 
         elif report_type=='Income vs Expense':
@@ -426,7 +427,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                print('💸 No data yet! \nStart by adding your first expense and income to see charts and insights.')
+                print('💸 No data yet! Start by adding your first expense and income to see charts and insights.')
 
 
         elif report_type=='Savings Analysis':
@@ -441,7 +442,8 @@ else:
             if income>0:
                 savings_rate=(savings/income)*100
                 st.metric('Savings Rate',f'{savings_rate:.1f}%')
-                st.progress(min(savings_rate,100)/100)
+                progress=max(0,min(savings_rate,100)/100)
+                st.progress(progress)
 
                 if savings_rate>=30:
                     st.success('Excellent savings habit 🌟')
@@ -453,7 +455,7 @@ else:
                     st.error('Low savings rate.')
 
             else:
-                print('💸 No data yet! \nStart by adding your first income to see charts and insights.')
+                print('💸 No data yet! Start by adding your first income to see charts and insights.')
 
 
         elif report_type=='Monthly Trend':
@@ -470,7 +472,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No expenses yet! \nStart by adding your first expense to see charts and insights.')
+                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
                 
     elif menu=='👤 Profile':
         uid=st.session_state.user_id
@@ -532,7 +534,7 @@ else:
 
             if update:
                 if not new_name.strip():
-                    st.error("Name cannot be empty!")
+                    st.error('Name cannot be empty!')
                 else:
                     supabase.table('users').update({'name':new_name,'monthly_budget':new_budget}).eq('user_id',uid).execute()
                     st.session_state.user_name=new_name
@@ -577,9 +579,9 @@ else:
         
         if confirm_delete:
             if st.button('🗑 Delete My Account', type='primary'):
-                supabase.table("expenses").delete().eq('user_id',uid).execute()
-                supabase.table("income").delete().eq('user_id',uid).execute()
-                supabase.table("users").delete().eq('user_id',uid).execute()
+                supabase.table('expenses').delete().eq('user_id',uid).execute()
+                supabase.table('income').delete().eq('user_id',uid).execute()
+                supabase.table('users').delete().eq('user_id',uid).execute()
                 st.session_state.logged_in=False
                 st.session_state.user_id=None
                 st.session_state.user_name=''
