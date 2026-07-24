@@ -63,9 +63,7 @@ if not st.session_state.logged_in:
                     supabase.table('users').insert({'name': name,'email': email,'password': hashed_password,'monthly_budget': budget}).execute()
                     st.balloons()
                     st.success('Account created successfully!')
-                    time.sleep(1.5)
                     st.info('You can now login.')
-                    time.sleep(1.2)
 
 
     elif auth=='Login':
@@ -88,7 +86,6 @@ if not st.session_state.logged_in:
                     st.session_state.user_id=user_id
                     st.session_state.user_name=user_name
                     st.success("Login successful!")
-                    time.sleep(1.5)
                     st.rerun()
 
                 else:
@@ -367,7 +364,6 @@ else:
                 if st.button('🗑 Delete Income',type='primary'):
                     supabase.table('income').delete().eq('income_id',selected_id).eq('user_id',uid).execute()
                     st.success('Income deleted successfully!')
-                    time.sleep(1.5)
                     st.rerun()
 
             else:
@@ -545,7 +541,6 @@ else:
                     supabase.table('users').update({'name':new_name,'monthly_budget':new_budget}).eq('user_id',uid).execute()
                     st.session_state.user_name=new_name
                     st.success('Profile updated successfully!')
-                    time.sleep(1.5)
                     st.rerun()
 
         st.markdown('---')
@@ -576,7 +571,6 @@ else:
                         new_hash=bcrypt.hashpw(new_password.encode(),bcrypt.gensalt()).decode()
                         supabase.table('users').update({'password':new_hash}).eq('user_id',uid).execute()
                         st.success('Password changed successfully!')
-                        time.sleep(1.5)
                         st.rerun()
 
                     else:
@@ -594,7 +588,6 @@ else:
                 st.session_state.user_id=None
                 st.session_state.user_name=''
                 st.success('Your account has been deleted successfully.')
-                time.sleep(1.5)
                 st.rerun()
 
                                          
