@@ -4,14 +4,66 @@ import pandas as pd
 import plotly.express as px
 import bcrypt
 
-st.set_page_config(page_title='BudgetBuddy',page_icon='💰',layout='wide')
 st.markdown("""
-# 💰 BudgetBuddy  
-### Track. Analyze. Improve your spending.
+<style>
 
----
-""")
+.features-title{
+    text-align:center;
+    color:white;
+    font-size:34px;
+    font-weight:700;
+    margin-top:25px;
+}
 
+.features-subtitle{
+    text-align:center;
+    color:#A1A1AA;
+    margin-bottom:30px;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+    margin-top:15px;
+}
+
+.feature-card{
+    background:#17171D;
+    border:1px solid #2B2B35;
+    border-radius:18px;
+    padding:22px;
+    transition:0.3s;
+}
+
+.feature-card:hover{
+    transform:translateY(-6px);
+    border:1px solid #8B5CF6;
+    box-shadow:0px 0px 18px rgba(139,92,246,.35);
+}
+
+.feature-icon{
+    font-size:32px;
+    margin-bottom:8px;
+}
+
+.feature-title{
+    color:white;
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.feature-desc{
+    color:#A1A1AA;
+    font-size:15px;
+    line-height:1.6;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+st.set_page_config(page_title='BudgetBuddy',page_icon='👻',layout='wide',initial_sidebar_state='expanded')
 s_url=st.secrets['SUPABASE_URL']
 s_key=st.secrets['SUPABASE_KEY']
 supabase=create_client(s_url,s_key)
@@ -26,12 +78,75 @@ if 'user_name' not in st.session_state:
     st.session_state.user_name=''
 
 if not st.session_state.logged_in:
-    st.image('front.jpeg')
-    auth = st.radio('',['Login', 'Signup'],horizontal=True)
+    st.markdown("""<h1 style='text-align:center;color:#7DF9FF;margin-bottom:0px;'>👻 BudgetBuddy</h1>
+                    <h4 style='text-align:center;color:#A855F7;margin-top:0;'>Track. Analyze. Improve.</h4>"""\
+                ,unsafe_allow_html=True)
+    st.markdown("""
+<div class='features-title'>
+Why Us?
+</div>
+
+<div class='features-subtitle'>
+Everything you need to build smarter financial habits.
+</div>
+
+<div class='feature-grid'>
+
+<div class='feature-card'>
+<div class='feature-icon'>˗ˋˏ₹ˎˊ˗</div>
+<div class='feature-title'>Track Every Expense</div>
+<div class='feature-desc'>
+Log every purchase in seconds and organize it into categories.
+</div>
+</div>
+
+<div class='feature-card'>
+<div class='feature-icon'>🗐</div>
+<div class='feature-title'>Understand Your Spending</div>
+<div class='feature-desc'>
+Visualize where your money goes with interactive charts and insights.
+</div>
+</div>
+
+<div class='feature-card'>
+<div class='feature-icon'>⌖</div>
+<div class='feature-title'>Stay Within Budget</div>
+<div class='feature-desc'>
+Monitor your monthly budget and avoid overspending.
+</div>
+</div>
+
+<div class='feature-card'>
+<div class='feature-icon'>✦</div>
+<div class='feature-title'>Monitor Income</div>
+<div class='feature-desc'>
+Keep track of every income source alongside your expenses.
+</div>
+</div>
+
+<div class='feature-card'>
+<div class='feature-icon'>🗒</div>
+<div class='feature-title'>Financial Reports</div>
+<div class='feature-desc'>
+Generate summaries and discover spending trends over time.
+</div>
+</div>
+
+<div class='feature-card'>
+<div class='feature-icon'>🔒</div>
+<div class='feature-title'>Your Data, Protected</div>
+<div class='feature-desc'>
+Passwords are securely encrypted using bcrypt before storage.
+</div>
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+    
+    auth=st.radio('',['Login', 'Signup'],horizontal=True)
     st.markdown('---')
 
     if auth=='Signup':
-        st.subheader('📝 Create Account')
 
         name=st.text_input('Name')
         email=st.text_input('Email')
@@ -52,7 +167,7 @@ if not st.session_state.logged_in:
                 st.error('Please fill all fields!')
 
             else:
-                existing=(supabase.table('users').select('email').limit(1).eq('email', email).execute())
+                existing=(supabase.table("users").select("email").limit(1).eq("email", email).execute())
 
                 if existing.data:
                     st.error('Email already registered!')
@@ -66,20 +181,19 @@ if not st.session_state.logged_in:
                     st.info('You can now login.')
 
 
-    elif auth=='Login':
-        st.subheader('🔐 Login')
+    elif auth=='Login': 
         email=st.text_input('Email')
         email=email.strip().lower()
-        password=st.text_input('Password', type='password')
+        password=st.text_input('Password',type='password')
 
         if st.button('Login'):
-            response=(supabase.table("users").select("user_id,name,password").eq("email",email).limit(1).execute())
+            response=(supabase.table('users').select('user_id,name,password').eq('email',email).limit(1).execute())
 
             if response.data:
                 user=response.data[0]
-                user_id=user["user_id"]
-                user_name=user["name"]
-                stored_hash=user["password"]
+                user_id=user['user_id']
+                user_name=user['name']
+                stored_hash=user['password']
 
                 if bcrypt.checkpw(password.encode(),stored_hash.encode()):
                     st.session_state.logged_in=True
@@ -93,7 +207,6 @@ if not st.session_state.logged_in:
 
             else:
                 st.error('No account found!')
-
 else:
     st.sidebar.image('cover.jpeg',caption='Make smart financial decisions')
     menu=st.sidebar.selectbox('Menu',['🏠 Dashboard','💸 Add Expense','💵 Add Income','📋 View Transactions',\
