@@ -7,58 +7,21 @@ import bcrypt
 st.markdown("""
 <style>
 
-.features-title{
-    text-align:center;
-    color:white;
-    font-size:34px;
-    font-weight:700;
-    margin-top:25px;
-}
+.features-title{text-align:center;color:white;font-size:34px;font-weight:700;margin-top:25px;}
+.features-subtitle{text-align:center;color:#A1A1AA;margin-bottom:30px;}
+.feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:15px;}
+.feature-card{background:#17171D;border:1px solid #2B2B35;border-radius:18px;padding:22px;transition:0.3s;}
+.feature-card:hover{transform:translateY(-6px);border:1px solid #8B5CF6;box-shadow:0px 0px 18px rgba(139,92,246,.35);}
+.feature-icon{font-size:32px;margin-bottom:8px;}
+.feature-title{color:white;font-size:20px;font-weight:600;margin-bottom:8px;}
+.feature-desc{color:#A1A1AA;font-size:15px;line-height:1.6;}
 
-.features-subtitle{
-    text-align:center;
-    color:#A1A1AA;
-    margin-bottom:30px;
-}
-
-.feature-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:18px;
-    margin-top:15px;
-}
-
-.feature-card{
-    background:#17171D;
-    border:1px solid #2B2B35;
-    border-radius:18px;
-    padding:22px;
-    transition:0.3s;
-}
-
-.feature-card:hover{
-    transform:translateY(-6px);
-    border:1px solid #8B5CF6;
-    box-shadow:0px 0px 18px rgba(139,92,246,.35);
-}
-
-.feature-icon{
-    font-size:32px;
-    margin-bottom:8px;
-}
-
-.feature-title{
-    color:white;
-    font-size:20px;
-    font-weight:600;
-    margin-bottom:8px;
-}
-
-.feature-desc{
-    color:#A1A1AA;
-    font-size:15px;
-    line-height:1.6;
-}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:20px;margin-bottom:30px;}
+.metric-card{background:#17171D;border:1px solid #2D2D37;border-radius:22px;padding:22px;transition:.3s;}
+.metric-card:hover{transform:translateY(-6px);border-color:#8B5CF6;box-shadow:0 0 22px rgba(139,92,246,.35);}
+.metric-icon{font-size:32px;margin-bottom:8px;}
+.metric-title{color:#B3B3C2;font-size:16px;}
+.metric-value{color:whitefont-size:34px;font-weight:700;margin-top:10px;}
 
 </style>
 """, unsafe_allow_html=True)
@@ -207,6 +170,7 @@ Passwords are securely encrypted using bcrypt before storage.
 
             else:
                 st.error('No account found!')
+
 else:
     st.sidebar.image('cover.jpeg',caption='Make smart financial decisions')
     menu=st.sidebar.selectbox('Menu',['🏠 Dashboard','💸 Add Expense','💵 Add Income','📋 View Transactions',\
@@ -227,33 +191,40 @@ else:
         data=supabase.table('users').select('monthly_budget').eq('user_id',uid).execute().data
         budget=0
         if data:
-            budget=float(data[0].get('monthly_budget') or 0)
+            budget=float(data[0].get("monthly_budget") or 0)
 
         savings=total_income-total_expense
+        remaining=budget-total_expense
 
-        col1,col2,col3,col4,col5=st.columns(5)
+        st.markdown(f"""
+<div class="metric-grid">
 
-        with col1:
-            st.metric('💵 Income',f'₹{total_income:,.2f}')
+<div class="metric-card">
+<div class="metric-icon">💰</div>
+<div class="metric-title">Total Income</div>
+<div class="metric-value">₹{total_income:,.0f}</div>
+</div>
 
-        with col2:
-            st.metric('💸 Expenses',f'₹{total_expense:,.2f}')
+<div class="metric-card">
+<div class="metric-icon">💸</div>
+<div class="metric-title">Total Expenses</div>
+<div class="metric-value">₹{total_expense:,.0f}</div>
+</div>
 
-        with col3:
-            st.metric('💰 Savings',f'₹{savings:,.2f}')
+<div class="metric-card">
+<div class="metric-icon">🎯</div>
+<div class="metric-title">Budget Left</div>
+<div class="metric-value">₹{remaining:,.0f}</div>
+</div>
 
-        with col4:
-            st.metric('🎯 Budget',f'₹{budget:,.2f}')
-            
-        with col5:
-            remaining=budget-total_expense
-            if remaining>=0:
-                st.metric("🎯 Budget Left",f"₹{remaining:,.2f}")
-            else:
-                st.metric("⚠️ Over Budget",f"₹{abs(remaining):,.2f}")
+<div class="metric-card">
+<div class="metric-icon">📈</div>
+<div class="metric-title">Savings</div>
+<div class="metric-value">₹{savings:,.0f}</div>
+</div>
 
-        st.markdown('---')
-        st.subheader('📊 Budget Usage')
+</div>
+""", unsafe_allow_html=True)
 
         if budget>0:
             percent=(total_expense/budget)*100
@@ -305,7 +276,7 @@ else:
             st.line_chart(df.set_index('Month'))
 
         else:
-            st.info('💸 No monthly trend yet! Start by adding your first expense to see charts and insights.')
+            st.info('No monthly trend yet.')
 
         st.markdown('---')
         st.subheader('💡 Insight')
@@ -378,7 +349,7 @@ else:
             st.dataframe(df,use_container_width=True)
 
         else:
-            st.info('💸 No expense records yet! Start by adding your first expense to see charts and insights.')
+            st.info('No expenses added yet.')
 
     elif menu=='💵 Add Income':
         st.title('💵 Add Income')
@@ -413,7 +384,7 @@ else:
             st.dataframe(df,use_container_width=True)
 
         else:
-            st.info('💸 No income records yet! Start by adding your first income to see charts and insights.')
+            st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
 
 
     elif menu=='📋 View Transactions':
@@ -442,7 +413,7 @@ else:
                 st.dataframe(df,use_container_width=True)
 
             else:
-                st.info('💸 No transactions yet! Start by adding your first expenses and income to see charts and insights.')
+                st.info('💸 No transactions yet! Start by adding your first expense to see charts and insights.')
 
         elif transaction_type=='Expenses':
             data=supabase.table('expenses').select('transaction_id,amount,category,note,date').eq('user_id',uid).order('date',desc=True).execute().data
@@ -478,7 +449,7 @@ else:
                     st.rerun()
 
             else:
-                st.info('💸 No income records yet! Start by adding your first income to see charts and insights.')
+                st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
                 
 
     elif menu=='📊 Reports':
@@ -540,7 +511,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No data yet! Start by adding your first expenses and income to see charts and insights.')
+                print('💸 No data yet! Start by adding your first expense and income to see charts and insights.')
 
 
         elif report_type=='Savings Analysis':
@@ -568,7 +539,7 @@ else:
                     st.error('Low savings rate.')
 
             else:
-                st.info('💸 No data yet! Start by adding your first expenses and income to see charts and insights.')
+                print('💸 No data yet! Start by adding your first income to see charts and insights.')
 
 
         elif report_type=='Monthly Trend':
@@ -585,7 +556,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No data yet! Start by adding your first expenses and incomes to see charts and insights.')
+                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
                 
     elif menu=='👤 Profile':
         uid=st.session_state.user_id
