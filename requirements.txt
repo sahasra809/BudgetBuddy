@@ -1,4 +1,5 @@
-streamlit
+streamlit>=1.36
+streamlit-option-menu==0.4.0
 supabase
 pandas
 plotly
