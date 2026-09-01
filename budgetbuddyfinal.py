@@ -173,7 +173,7 @@ Passwords are securely encrypted using bcrypt before storage.
 
 else:
     st.sidebar.image('cover.jpeg',caption='Make smart financial decisions')
-    menu=st.sidebar.select.radio('Menu',['🏠 Dashboard','💸 Add Expense','💵 Add Income','📋 View Transactions',\
+    menu=st.sidebar.radio('Menu',['🏠 Dashboard','💸 Add Expense','💵 Add Income','📋 View Transactions',\
                                       '📊 Reports','👤 Profile','🚪 Logout'])
 
     if menu=='🏠 Dashboard':
