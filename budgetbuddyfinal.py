@@ -211,25 +211,25 @@ else:
 <div class="metric-grid">
 
 <div class="metric-card">
-<div class="metric-icon">💰</div>
+<div class="metric-icon"><i class="bi bi-cash-stack"></i></div>
 <div class="metric-title">Total Income</div>
 <div class="metric-value">₹{total_income:,.0f}</div>
 </div>
 
 <div class="metric-card">
-<div class="metric-icon">💸</div>
+<div class="metric-icon"><i class="bi bi-credit-card-2-front"></i></div>
 <div class="metric-title">Total Expenses</div>
 <div class="metric-value">₹{total_expense:,.0f}</div>
 </div>
 
 <div class="metric-card">
-<div class="metric-icon">🎯</div>
+<div class="metric-icon"><i class="bi bi-crosshair"></i></div>
 <div class="metric-title">Budget Left</div>
 <div class="metric-value">₹{remaining:,.0f}</div>
 </div>
 
 <div class="metric-card">
-<div class="metric-icon">📈</div>
+<div class="metric-icon"><i class="bi bi-graph-up-arrow"></i></div>
 <div class="metric-title">Savings</div>
 <div class="metric-value">₹{savings:,.0f}</div>
 </div>
