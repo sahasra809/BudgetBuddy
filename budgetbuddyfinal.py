@@ -189,7 +189,7 @@ else:
     
     if menu=='Dashboard':
         uid=st.session_state.user_id
-        st.title('🏠 Dashboard')
+        st.title(':material/dashboard: Dashboard')
         st.write(f"Welcome back, {st.session_state.user_name}👋")
         st.write('Track your income, expenses, and savings at a glance.')
 
@@ -327,7 +327,7 @@ else:
 
 
     elif menu=='Add Expense':
-        st.title('💸 Add Expense')
+        st.title(':material/payments: Add Expense')
         uid=st.session_state.user_id
 
         data=supabase.table('category').select('category_name').execute().data
@@ -363,7 +363,7 @@ else:
             st.info('No expenses added yet.')
 
     elif menu=='Add Income':
-        st.title('💵 Add Income')
+        st.title(':material/account_balance_wallet: Add Income')
         uid=st.session_state.user_id
         data=supabase.table('income').select('amount').eq('user_id',uid).execute().data
         total_income=sum(float(i['amount'] or 0) for i in data)
@@ -399,7 +399,7 @@ else:
 
 
     elif menu=='View Transactions':
-        st.title('📋 Transactions')
+         st.title(':material/receipt_long: Transaction Ledger')
         uid=st.session_state.user_id
         transaction_type=st.selectbox('Show',['All','Expenses','Income'])
 
@@ -464,7 +464,7 @@ else:
                 
 
     elif menu=='Reports':
-        st.title('📊 Financial Reports')
+        st.title(':material/bar_chart: Analytics & Summaries')
         report_type=st.selectbox('Select Report',['Monthly Summary','Category Analysis','Income vs Expense',\
                                           'Savings Analysis','Monthly Trend'])
         uid=st.session_state.user_id
@@ -571,7 +571,7 @@ else:
                 
     elif menu=='Profile':
         uid=st.session_state.user_id
-        st.title('👤 My Profile')
+        st.title(':material/person: Account Settings')
 
         response=supabase.table('users').select('name,email,monthly_budget,created_at').eq('user_id',uid).execute()
 
