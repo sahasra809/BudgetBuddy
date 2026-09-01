@@ -1,8 +1,11 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 from supabase import create_client
 import pandas as pd
 import plotly.express as px
 import bcrypt
+
+st.set_page_config(page_title='BudgetBuddy',page_icon='👻',layout='wide',initial_sidebar_state='expanded')
 
 st.markdown("""
 <style>
@@ -26,7 +29,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.set_page_config(page_title='BudgetBuddy',page_icon='👻',layout='wide',initial_sidebar_state='expanded')
 s_url=st.secrets['SUPABASE_URL']
 s_key=st.secrets['SUPABASE_KEY']
 supabase=create_client(s_url,s_key)
@@ -173,10 +175,19 @@ Passwords are securely encrypted using bcrypt before storage.
 
 else:
     st.sidebar.image('cover.jpeg',caption='Make smart financial decisions')
-    menu=st.sidebar.radio('Menu',['🏠 Dashboard','💸 Add Expense','💵 Add Income','📋 View Transactions',\
-                                      '📊 Reports','👤 Profile','🚪 Logout'])
 
-    if menu=='🏠 Dashboard':
+     with st.sidebar:
+        menu = option_menu(menu_title=None, options=["Dashboard", "Add Expense", "Add Income", "View Transactions", "Reports", "Profile", "Logout"],
+                           icons=["house", "cash-coin", "wallet2", "receipt", "bar-chart-line", "person", "box-arrow-right"],
+                           menu_icon="cast", 
+                           default_index=0,
+                           styles={"container": {"padding": "0!important", "background-color": "transparent"},
+                                   "icon": {"color": "#ff4b4b", "font-size": "16px"}, 
+                                   "nav-link": {"font-size": "15px", "text-align": "left", "margin":"0px", "--hover-color": "#262730"},
+                                   "nav-link-selected": {"background-color": "#ff4b4b"},})
+
+    
+    if menu=='Dashboard':
         uid=st.session_state.user_id
         st.title('🏠 Dashboard')
         st.write(f"Welcome back, {st.session_state.user_name}👋")
@@ -315,7 +326,7 @@ else:
             st.info('Start adding expenses to get insights!')
 
 
-    elif menu=='💸 Add Expense':
+    elif menu=='Add Expense':
         st.title('💸 Add Expense')
         uid=st.session_state.user_id
 
@@ -351,7 +362,7 @@ else:
         else:
             st.info('No expenses added yet.')
 
-    elif menu=='💵 Add Income':
+    elif menu=='Add Income':
         st.title('💵 Add Income')
         uid=st.session_state.user_id
         data=supabase.table('income').select('amount').eq('user_id',uid).execute().data
@@ -387,7 +398,7 @@ else:
             st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
 
 
-    elif menu=='📋 View Transactions':
+    elif menu=='View Transactions':
         st.title('📋 Transactions')
         uid=st.session_state.user_id
         transaction_type=st.selectbox('Show',['All','Expenses','Income'])
@@ -452,7 +463,7 @@ else:
                 st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
                 
 
-    elif menu=='📊 Reports':
+    elif menu=='Reports':
         st.title('📊 Financial Reports')
         report_type=st.selectbox('Select Report',['Monthly Summary','Category Analysis','Income vs Expense',\
                                           'Savings Analysis','Monthly Trend'])
@@ -558,7 +569,7 @@ else:
             else:
                 st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
                 
-    elif menu=='👤 Profile':
+    elif menu=='Profile':
         uid=st.session_state.user_id
         st.title('👤 My Profile')
 
@@ -673,7 +684,7 @@ else:
                 st.rerun()
 
                                          
-    elif menu=='🚪 Logout':
+    elif menu=='Logout':
         st.session_state.logged_in=False
         st.session_state.user_id=None
         st.session_state.user_name=''
