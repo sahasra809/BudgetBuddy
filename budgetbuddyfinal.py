@@ -190,7 +190,7 @@ else:
     if menu=='Dashboard':
         uid=st.session_state.user_id
         st.title(':material/dashboard: Dashboard')
-        st.write(f"Welcome back, {st.session_state.user_name}:material/waving_hand:")
+        st.write(f"Welcome back, {st.session_state.user_name} :material/waving_hand:")
         st.write('Track your income, expenses, and savings at a glance.')
 
         data=supabase.table('income').select('amount').eq('user_id',uid).execute().data
