@@ -182,9 +182,9 @@ else:
                            menu_icon="cast", 
                            default_index=0,
                            styles={"container": {"padding": "0!important", "background-color": "transparent"},
-                                   "icon": {"color": "#ff4b4b", "font-size": "16px"}, 
+                                   "icon": {"color": "#5935bd", "font-size": "16px"}, 
                                    "nav-link": {"font-size": "15px", "text-align": "left", "margin":"0px", "--hover-color": "#262730"},
-                                   "nav-link-selected": {"background-color": "#ff4b4b"},})
+                                   "nav-link-selected": {"background-color": "#9a7ceb"},})
 
     
     if menu=='Dashboard':
