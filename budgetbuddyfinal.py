@@ -9,6 +9,7 @@ st.set_page_config(page_title='BudgetBuddy',page_icon='👻',layout='wide',initi
 
 st.markdown("""
 <style>
+@import url("https://jsdelivr.net");
 
 .features-title{text-align:center;color:white;font-size:34px;font-weight:700;margin-top:25px;}
 .features-subtitle{text-align:center;color:#A1A1AA;margin-bottom:30px;}
