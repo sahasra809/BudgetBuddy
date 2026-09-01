@@ -399,7 +399,7 @@ else:
 
 
     elif menu=='View Transactions':
-         st.title(':material/receipt_long: Transaction Ledger')
+        st.title(':material/receipt_long: Transaction Ledger')
         uid=st.session_state.user_id
         transaction_type=st.selectbox('Show',['All','Expenses','Income'])
 
