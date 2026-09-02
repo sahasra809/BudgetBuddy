@@ -245,16 +245,16 @@ else:
             st.write(f"{percent:.1f}% of monthly budget used")
 
             if percent < 50:
-                st.success('Great job! Spending is under control 🌟')
+                st.success('Great job! Spending is under control :material/auto_awesome:')
 
             elif percent < 80:
-                st.warning('Budget usage is getting higher 👀')
+                st.warning('Budget usage is getting higher :material/visibility:')
 
             elif percent <= 100:
-                st.error("You're close to your budget limit ⚠️")
+                st.error("You're close to your budget limit :material/warning:")
 
             else:
-                st.error("You've exceeded your monthly budget! 🚨")
+                st.error("You've exceeded your monthly budget! :material/emergency:")
 
         st.markdown('---')
         st.subheader(':material/pie_chart: Expense Breakdown')
@@ -277,7 +277,7 @@ else:
             st.info('No expense data available.')
 
         st.markdown('---')
-        st.subheader('📈 Monthly Expense Trend')
+        st.subheader(':material/bar_chart: Monthly Expense Trend')
 
         data=supabase.table('expenses').select('date,amount').eq('user_id',uid).execute().data
 
@@ -292,7 +292,7 @@ else:
             st.info('No monthly trend yet.')
 
         st.markdown('---')
-        st.subheader('💡 Insight')
+        st.subheader(':material/lightbulb_outline: Insight')
 
         data=supabase.table('expenses').select('category,amount').eq('user_id',uid).execute().data
 
@@ -306,23 +306,23 @@ else:
 
             if total_income>0:
                 savings_rate=(savings/total_income)*100
-                st.info(f"💰 You saved {savings_rate:.1f}% of your income.")
+                st.info(f"::material/money_bag You saved {savings_rate:.1f}% of your income.")
 
             budget_left=budget-total_expense
 
             if budget>0:
-                st.info(f"🎯 Budget remaining: ₹{budget_left:,.2f}")
+                st.info(f"::material/my_location Budget remaining: ₹{budget_left:,.2f}")
 
             if total_expense>budget and budget>0:
-                st.error('⚠️ You have exceeded your monthly budget!')
+                st.error(':material/warning: You have exceeded your monthly budget!')
 
             percent=(top['amount']/total_expense)*100
-            st.info(f"📊 {percent:.1f}% of your expenses were spent on {top['category']}.")
+            st.info(f":material/bar_chart: {percent:.1f}% of your expenses were spent on {top['category']}.")
 
             if savings>0:
-                st.success("✅ You're spending less than you earn!")
+                st.success(":material/check_box: You're spending less than you earn!")
             else:
-                st.error('⚠️ Expenses exceed income!')
+                st.error(':material/warning: Expenses exceed income!')
 
         else:
             st.info('Start adding expenses to get insights!')
@@ -369,7 +369,7 @@ else:
         uid=st.session_state.user_id
         data=supabase.table('income').select('amount').eq('user_id',uid).execute().data
         total_income=sum(float(i['amount'] or 0) for i in data)
-        st.metric('💰 Total Income',f'₹{total_income:,.2f}')
+        st.metric(':material/money_bag: Total Income',f'₹{total_income:,.2f}')
 
         with st.form('income_form'):
             amount=st.number_input('Income Amount (₹)',min_value=0.0,step=100.0)
@@ -397,7 +397,7 @@ else:
             st.dataframe(df,use_container_width=True)
 
         else:
-            st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
+            st.info(':material/payments: No income records yet! Start by adding your first expense to see charts and insights.')
 
 
     elif menu=='View Transactions':
@@ -426,7 +426,7 @@ else:
                 st.dataframe(df,use_container_width=True)
 
             else:
-                st.info('💸 No transactions yet! Start by adding your first expense to see charts and insights.')
+                st.info(':material/payments: No transactions yet! Start by adding your first expense to see charts and insights.')
 
         elif transaction_type=='Expenses':
             data=supabase.table('expenses').select('transaction_id,amount,category,note,date').eq('user_id',uid).order('date',desc=True).execute().data
@@ -438,13 +438,13 @@ else:
                 st.dataframe(df,use_container_width=True,hide_index=True)
                 selected_id=st.selectbox('Select expense to delete',df['ID'],format_func=lambda x:f"ID {x} | ₹{df[df['ID']==x]['Amount'].values[0]} | {df[df['ID']==x]['Category'].values[0]}")
 
-                if st.button('🗑 Delete Expense',type='primary'):
+                if st.button(':material/delete: Delete Expense',type='primary'):
                     supabase.table('expenses').delete().eq('transaction_id',selected_id).eq('user_id',uid).execute()
                     st.success('Expense deleted successfully!')
                     st.rerun()
 
             else:
-                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
+                st.info(':material/payments: No expenses yet! Start by adding your first expense to see charts and insights.')
 
         elif transaction_type=='Income':
             data=supabase.table('income').select('income_id,amount,source,date').eq('user_id',uid).order('date',desc=True).execute().data
@@ -456,13 +456,13 @@ else:
                 st.dataframe(df,use_container_width=True,hide_index=True)
                 selected_id=st.selectbox('Select income to delete',df['ID'],format_func=lambda x:f"ID {x} | ₹{df[df['ID']==x]['Amount'].values[0]} | {df[df['ID']==x]['Source'].values[0]}")
 
-                if st.button('🗑 Delete Income',type='primary'):
+                if st.button(':material/delete: Delete Income',type='primary'):
                     supabase.table('income').delete().eq('income_id',selected_id).eq('user_id',uid).execute()
                     st.success('Income deleted successfully!')
                     st.rerun()
 
             else:
-                st.info('💸 No income records yet! Start by adding your first expense to see charts and insights.')
+                st.info(':material/payments: No income records yet! Start by adding your first expense to see charts and insights.')
                 
 
     elif menu=='Reports':
@@ -481,13 +481,13 @@ else:
             c1,c2,c3=st.columns(3)
 
             with c1:
-                st.metric('💰 Income',f'₹{total_income:,.2f}')
+                st.metric(':material/money_bag: Income',f'₹{total_income:,.2f}')
 
             with c2:
-                st.metric('💸 Expense',f'₹{total_expense:,.2f}')
+                st.metric(':material/payments: Expense',f'₹{total_expense:,.2f}')
 
             with c3:
-                st.metric('🏦 Savings',f'₹{savings:,.2f}')
+                st.metric(':material/account_balance: Savings',f'₹{savings:,.2f}')
 
 
         elif report_type=='Category Analysis':
@@ -506,7 +506,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
+                st.info(':material/payments: No expenses yet! Start by adding your first expense to see charts and insights.')
 
 
         elif report_type=='Income vs Expense':
@@ -524,7 +524,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                print('💸 No data yet! Start by adding your first expense and income to see charts and insights.')
+                print(':material/payments: No data yet! Start by adding your first expense and income to see charts and insights.')
 
 
         elif report_type=='Savings Analysis':
@@ -543,7 +543,7 @@ else:
                 st.progress(progress)
 
                 if savings_rate>=30:
-                    st.success('Excellent savings habit 🌟')
+                    st.success('Excellent savings habit :material/auto_awesome:')
 
                 elif savings_rate>=10:
                     st.warning('Decent savings. Try improving.')
@@ -552,7 +552,7 @@ else:
                     st.error('Low savings rate.')
 
             else:
-                print('💸 No data yet! Start by adding your first income to see charts and insights.')
+                print(':material/payments: No data yet! Start by adding your first income to see charts and insights.')
 
 
         elif report_type=='Monthly Trend':
@@ -569,7 +569,7 @@ else:
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
-                st.info('💸 No expenses yet! Start by adding your first expense to see charts and insights.')
+                st.info(':material/payments: No expenses yet! Start by adding your first expense to see charts and insights.')
                 
     elif menu=='Profile':
         uid=st.session_state.user_id
@@ -613,15 +613,15 @@ else:
             c1,c2=st.columns(2)
 
             with c1:
-                st.metric('💰 Income',f'₹{total_income:,.2f}')
-                st.metric('💸 Expense',f'₹{total_expense:,.2f}')
+                st.metric(':material/money_bag: Income',f'₹{total_income:,.2f}')
+                st.metric(':material/payments: Expense',f'₹{total_expense:,.2f}')
 
             with c2:
-                st.metric('🏦 Savings',f'₹{savings:,.2f}')
-                st.metric('📋 Transactions',transactions)
+                st.metric(':material/account_balance: Savings',f'₹{savings:,.2f}')
+                st.metric(':material/assignment: Transactions',transactions)
 
         st.markdown('---')
-        st.subheader('✏️ Edit Profile')
+        st.subheader(':material/edit: Edit Profile')
 
         with st.form('profile_form'):
 
@@ -639,7 +639,7 @@ else:
                     st.rerun()
 
         st.markdown('---')
-        st.subheader('🔐 Change Password')
+        st.subheader(':material/enhanced_encryption: Change Password')
 
         with st.form('password_form'):
 
@@ -675,7 +675,7 @@ else:
         confirm_delete=st.checkbox('I understand that this action is permanent.')
         
         if confirm_delete:
-            if st.button('🗑 Delete My Account', type='primary'):
+            if st.button(':material/delete: Delete My Account', type='primary'):
                 supabase.table('expenses').delete().eq('user_id',uid).execute()
                 supabase.table('income').delete().eq('user_id',uid).execute()
                 supabase.table('users').delete().eq('user_id',uid).execute()
