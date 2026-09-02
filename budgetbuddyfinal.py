@@ -245,7 +245,7 @@ else:
             st.write(f"{percent:.1f}% of monthly budget used")
 
             if percent < 50:
-                st.success('Great job! Spending is under control :material/auto_awesome:')
+                st.success('Great job! Spending is under control :material/star:')
 
             elif percent < 80:
                 st.warning('Budget usage is getting higher :material/visibility:')
