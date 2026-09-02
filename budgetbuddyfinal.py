@@ -670,10 +670,11 @@ else:
 
                     else:
                         st.error('Current password is incorrect!')
-                        
+
+    delete=st.form_submit_button('Change Password')
+    if delete:
         st.warning('Deleting your account will permanently remove your profile, income records, and expense records. This action cannot be undone.')
         confirm_delete=st.checkbox('I understand that this action is permanent.')
-        
         if confirm_delete:
             if st.button(':material/delete: Delete My Account', type='primary'):
                 supabase.table('expenses').delete().eq('user_id',uid).execute()
@@ -684,6 +685,7 @@ else:
                 st.session_state.user_name=''
                 st.success('Your account has been deleted successfully.')
                 st.rerun()
+        
 
                                          
     elif menu=='Logout':
