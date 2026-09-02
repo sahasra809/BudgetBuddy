@@ -261,9 +261,9 @@ else:
 
         data=supabase.table('expenses').select('category,amount').eq('user_id',uid).execute().data
 
-        colors={'Food':'#FF6B6B','Transport':'#118AB2','Shopping':'#8338EC','Bills':'#FFD166',\
-                'Entertainment':'#FF007F','Education':'#3A86FF','Health':'#06D6A0','Other':'#6C757D'}
-
+        colors={'Food':'#FFADAD','Other':'#B0B7BD','Bills':'#FFD6A5','Education':'#A0C4FF','Health':'#CAFFBF',\
+                'Entertainment':'#FFC6FF','Shopping':'#BDB2FF','Transport':'#9BF6FF'}
+        
         if data:
             df=pd.DataFrame(data)
             df=df.groupby('category',as_index=False)['amount'].sum()
