@@ -209,6 +209,10 @@ else:
         remaining=budget-total_expense
 
         st.markdown(f"""
+
+<!-- Include the Bootstrap Icons CSS library -->
+<link rel="stylesheet" href="https://jsdelivr.net">
+        
 <div class="metric-grid">
 
 <div class="metric-card">
