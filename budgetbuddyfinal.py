@@ -306,12 +306,12 @@ else:
 
             if total_income>0:
                 savings_rate=(savings/total_income)*100
-                st.info(f"::material/money_bag: You saved {savings_rate:.1f}% of your income.")
+                st.info(f":material/money_bag: You saved {savings_rate:.1f}% of your income.")
 
             budget_left=budget-total_expense
 
             if budget>0:
-                st.info(f"::material/my_location: Budget remaining: ₹{budget_left:,.2f}")
+                st.info(f":material/my_location: Budget remaining: ₹{budget_left:,.2f}")
 
             if total_expense>budget and budget>0:
                 st.error(':material/warning: You have exceeded your monthly budget!')
