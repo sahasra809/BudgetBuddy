@@ -175,7 +175,7 @@ Passwords are securely encrypted using bcrypt before storage.
                 st.error('No account found!')
 
 else:
-    st.sidebar.image('cover.jpeg',caption='Make smart financial decisions')
+    st.sidebar.image('cover.png',caption='Make smart financial decisions')
 
     with st.sidebar:
         menu = option_menu(menu_title=None, options=["Dashboard", "Add Expense", "Add Income", "View Transactions", "Reports", "Profile", "Logout"],
