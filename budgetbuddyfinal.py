@@ -670,7 +670,7 @@ else:
                         st.error('Current password is incorrect!')
 
         st.markdown('---')
-        st.subheader(':material/build Account Management')
+        st.subheader(':material/build: Account Management')
         
         if "delete_clicked" not in st.session_state:
             st.session_state.delete_clicked=False
@@ -680,13 +680,12 @@ else:
                 st.session_state.delete_clicked = True
     
         if st.session_state.delete_clicked:
-            st.markdown("---")
             st.warning('Deleting your account will permanently remove your profile, income records, and expense records. This action cannot be undone.')
         
             confirm_delete = st.checkbox('I understand that this action is permanent.')
         
             if confirm_delete:
-                if st.button(':material/delete: Permanent Delete My Account', type='primary'):
+                if st.button(':material/delete: Delete My Account', type='primary'):
                     supabase.table('expenses').delete().eq('user_id', uid).execute()
                     supabase.table('income').delete().eq('user_id', uid).execute()
                     supabase.table('users').delete().eq('user_id', uid).execute()
