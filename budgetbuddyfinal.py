@@ -257,7 +257,7 @@ else:
                 st.error("You've exceeded your monthly budget! 🚨")
 
         st.markdown('---')
-        st.subheader('🥧 Expense Breakdown')
+        st.subheader(':material/pie_chart: Expense Breakdown')
 
         data=supabase.table('expenses').select('category,amount').eq('user_id',uid).execute().data
 
