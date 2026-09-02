@@ -671,23 +671,36 @@ else:
                     else:
                         st.error('Current password is incorrect!')
 
-    delete=st.form_submit_button('Change Password')
-    if delete:
+    if "delete_clicked" not in st.session_state:
+    st.session_state.delete_clicked = False
+
+    with st.form("account_settings_form"):
+        st.write("### Account Management")
+        if st.form_submit_button('Delete Account'):
+            st.session_state.delete_clicked = True
+
+    if st.session_state.delete_clicked:
+        st.markdown("---")
         st.warning('Deleting your account will permanently remove your profile, income records, and expense records. This action cannot be undone.')
-        confirm_delete=st.checkbox('I understand that this action is permanent.')
+    
+        confirm_delete = st.checkbox('I understand that this action is permanent.')
+    
         if confirm_delete:
-            if st.button(':material/delete: Delete My Account', type='primary'):
-                supabase.table('expenses').delete().eq('user_id',uid).execute()
-                supabase.table('income').delete().eq('user_id',uid).execute()
-                supabase.table('users').delete().eq('user_id',uid).execute()
+            if st.button(':material/delete: Permanent Delete My Account', type='primary'):
+                supabase.table('expenses').delete().eq('user_id', uid).execute()
+                supabase.table('income').delete().eq('user_id', uid).execute()
+                supabase.table('users').delete().eq('user_id', uid).execute()
                 st.session_state.logged_in=False
                 st.session_state.user_id=None
                 st.session_state.user_name=''
+                st.session_state.delete_clicked=False
                 st.success('Your account has been deleted successfully.')
                 st.rerun()
-        
-
-                                         
+                
+        if st.button('Cancel'):
+            st.session_state.delete_clicked = False
+            st.rerun() 
+                                  
     elif menu=='Logout':
         st.session_state.logged_in=False
         st.session_state.user_id=None
