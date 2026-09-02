@@ -670,13 +670,12 @@ else:
                         st.error('Current password is incorrect!')
 
         st.markdown('---')
-        st.subheader(':material/:build Account Management')
+        st.subheader(':material/build Account Management')
         
         if "delete_clicked" not in st.session_state:
             st.session_state.delete_clicked=False
     
         with st.form("account_settings_form"):
-            st.write("### Account Management")
             if st.form_submit_button('Delete Account'):
                 st.session_state.delete_clicked = True
     
