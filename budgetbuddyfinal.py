@@ -618,7 +618,7 @@ else:
 
             with c2:
                 st.metric(':material/account_balance: Savings',f'₹{savings:,.2f}')
-                st.metric(':material/assignment: Transactions',transactions)
+                st.metric(':material/assignment: Lifetime Transactions',transactions)
 
         st.markdown('---')
         st.subheader(':material/edit: Edit Profile')
@@ -642,11 +642,9 @@ else:
         st.subheader(':material/enhanced_encryption: Change Password')
 
         with st.form('password_form'):
-
             old_password=st.text_input('Current Password',type='password')
             new_password=st.text_input('New Password',type='password')
             confirm_password=st.text_input('Confirm New Password',type='password')
-
             change=st.form_submit_button('Change Password')
 
             if change:
@@ -671,6 +669,9 @@ else:
                     else:
                         st.error('Current password is incorrect!')
 
+        st.markdown('---')
+        st.subheader(':material/:build Account Management')
+        
         if "delete_clicked" not in st.session_state:
             st.session_state.delete_clicked=False
     
