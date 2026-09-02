@@ -209,9 +209,6 @@ else:
         remaining=budget-total_expense
 
         st.markdown(f"""
-
-<!-- Include the Bootstrap Icons CSS library -->
-<link rel="stylesheet" href="https://jsdelivr.net">
         
 <div class="metric-grid">
 
@@ -264,8 +261,8 @@ else:
 
         data=supabase.table('expenses').select('category,amount').eq('user_id',uid).execute().data
 
-        colors={'Food':'#EC7D7E','Transport':'#6A36BC','Shopping':'#1395BA','Bills':'#7F8000',\
-                'Entertainment':'#E5A90C','Education':'#4EAED4','Health':'#2ECA71','Other':'#95A2A6'}
+        colors={'Food':'#FF6B6B','Transport':'#118AB2','Shopping':'#8338EC','Bills':'#FFD166',\
+                'Entertainment':'#FF007F','Education':'#3A86FF','Health':'#06D6A0','Other':'#6C757D'}
 
         if data:
             df=pd.DataFrame(data)
