@@ -4,6 +4,7 @@ from supabase import create_client
 import pandas as pd
 import plotly.express as px
 import bcrypt
+from datetime import date
 
 st.set_page_config(page_title='BudgetBuddy',page_icon='👻',layout='wide',initial_sidebar_state='expanded')
 
@@ -20,7 +21,7 @@ st.markdown("""
 .feature-title{color:white;font-size:20px;font-weight:600;margin-bottom:8px;}
 .feature-desc{color:#A1A1AA;font-size:15px;line-height:1.6;}
 
-.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:20px;margin-bottom:30px;}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px;margin-bottom:30px;}
 .metric-card{background:#17171D;border:1px solid #2D2D37;border-radius:22px;padding:22px;transition:.3s;}
 .metric-card:hover{transform:translateY(-6px);border-color:#8B5CF6;box-shadow:0 0 22px rgba(139,92,246,.35);}
 .metric-icon{font-size:32px;margin-bottom:8px;}
@@ -193,140 +194,249 @@ else:
         st.title(':material/dashboard: Dashboard')
         st.write(f"Welcome back, {st.session_state.user_name} :material/waving_hand:")
         st.write('Track your income, expenses, and savings at a glance.')
-
-        data=supabase.table('income').select('amount').eq('user_id',uid).execute().data
-        total_income=sum(float(i['amount'] or 0) for i in data)
-
-        data=supabase.table('expenses').select('amount').eq('user_id',uid).execute().data
-        total_expense=sum(float(i['amount'] or 0) for i in data)
-
-        data=supabase.table('users').select('monthly_budget').eq('user_id',uid).execute().data
-        budget=0
-        if data:
-            budget=float(data[0].get("monthly_budget") or 0)
-
-        savings=total_income-total_expense
-        remaining=budget-total_expense
-
-        st.markdown(f"""
         
-<div class="metric-grid">
-
-<div class="metric-card">
-<div class="metric-icon"><i class="bi bi-cash-stack"></i></div>
-<div class="metric-title">Total Income</div>
-<div class="metric-value">₹{total_income:,.0f}</div>
-</div>
-
-<div class="metric-card">
-<div class="metric-icon"><i class="bi bi-credit-card-2-front"></i></div>
-<div class="metric-title">Total Expenses</div>
-<div class="metric-value">₹{total_expense:,.0f}</div>
-</div>
-
-<div class="metric-card">
-<div class="metric-icon"><i class="bi bi-crosshair"></i></div>
-<div class="metric-title">Budget Left</div>
-<div class="metric-value">₹{remaining:,.0f}</div>
-</div>
-
-<div class="metric-card">
-<div class="metric-icon"><i class="bi bi-graph-up-arrow"></i></div>
-<div class="metric-title">Savings</div>
-<div class="metric-value">₹{savings:,.0f}</div>
-</div>
-
-</div>
-""", unsafe_allow_html=True)
-
+        today=date.today()
+        first_day=today.replace(day=1)
+    
+        if today.month==12:
+            next_month=today.replace(year=today.year+1,month=1,day=1)
+        else:
+            next_month=today.replace(month=today.month+1,day=1)
+    
+        income_data=supabase.table('income').select('amount').eq('user_id',uid).execute().data
+        total_income=sum(float(i['amount'] or 0)for i in income_data)
+    
+        expense_data=supabase.table('expenses').select('amount').eq('user_id',uid).execute().data
+        total_expense=sum(float(i['amount'] or 0)for i in expense_data)
+    
+        lifetime_savings=total_income-total_expense
+    
+        monthly_income_data=supabase.table('income').select('amount').eq('user_id',uid).gte('date',str(first_day)).lt('date',str(next_month)).execute().data
+        monthly_income=sum(float(i['amount'] or 0)for i in monthly_income_data)
+    
+        monthly_expense_data=supabase.table('expenses').select('amount').eq('user_id',uid).gte('date',str(first_day)).lt('date',str(next_month)).execute().data
+        monthly_expense=sum(float(i['amount'] or 0)for i in monthly_expense_data)
+    
+        budget_data=supabase.table('users').select('monthly_budget').eq('user_id',uid).execute().data
+        budget=0
+        if budget_data:
+            budget=float(budget_data[0].get('monthly_budget') or 0)
+        budget_remaining=budget-monthly_expense
+    
+        st.subheader(':material/all_inclusive: Lifetime')
+        st.markdown(f"""
+        <div class="metric-grid">
+    
+        <div class="metric-card">
+        <div class="metric-icon">
+        <i class="bi bi-cash-stack"></i>
+        </div>
+    
+        <div class="metric-title">
+        Total Income
+        </div>
+    
+        <div class="metric-value">
+        ₹{total_income:,.0f}
+        </div>
+    
+        </div>
+    
+    
+        <div class="metric-card">
+        <div class="metric-icon">
+        <i class="bi bi-credit-card-2-front"></i>
+        </div>
+    
+        <div class="metric-title">
+        Total Expenses
+        </div>
+    
+        <div class="metric-value">
+        ₹{total_expense:,.0f}
+        </div>
+    
+        </div>
+        
+        <div class="metric-card">
+        <div class="metric-icon">
+        <i class="bi bi-graph-up-arrow"></i>
+        </div>
+    
+        <div class="metric-title">
+        Total Savings
+        </div>
+    
+        <div class="metric-value">
+        ₹{lifetime_savings:,.0f}
+        </div>
+    
+        </div>
+    
+        </div>
+    
+        """,unsafe_allow_html=True)
+    
+        st.subheader(f':material/calendar_month: This Month — {today.strftime("%B %Y")}')
+    
+        st.markdown(f"""
+        <div class="metric-grid">
+    
+        <div class="metric-card">
+        <div class="metric-icon">
+        <i class="bi bi-bullseye"></i>
+        </div>
+    
+        <div class="metric-title">
+        Monthly Budget
+        </div>
+    
+        <div class="metric-value">
+        ₹{budget:,.0f}
+        </div>
+    
+        </div>
+    
+        <div class="metric-card">
+        <div class="metric-icon">
+        <i class="bi bi-credit-card-2-front"></i>
+        </div>
+    
+        <div class="metric-title">
+        Spent This Month
+        </div>
+    
+        <div class="metric-value">
+        ₹{monthly_expense:,.0f}
+        </div>
+    
+        </div>
+    
+        <div class="metric-card">
+        <div class="metric-icon">
+        <i class="bi bi-wallet2"></i>
+        </div>
+    
+        <div class="metric-title">
+        Budget Remaining
+        </div>
+    
+        <div class="metric-value">
+        ₹{budget_remaining:,.0f}
+        </div>
+    
+        </div>
+    
+        </div>
+    
+        """,unsafe_allow_html=True)
+        
+    
         if budget>0:
-            percent=(total_expense/budget)*100
-            st.progress(min(percent,100)/100)
-            st.write(f"{percent:.1f}% of monthly budget used")
-
-            if percent < 50:
-                st.success('Great job! Spending is under control :material/star:')
-
-            elif percent < 80:
-                st.warning('Budget usage is getting higher :material/visibility:')
-
-            elif percent <= 100:
-                st.error("You're close to your budget limit :material/warning:")
-
+            percent=(monthly_expense/budget)*100
+            st.progress(min(max(percent,0),100)/100)
+            st.write(f"{percent:.1f}% of your monthly budget used")
+    
+            if percent<50:
+                st.success(':material/star: Great job! Your spending is under control.')
+    
+            elif percent<80:
+                st.warning(':material/visibility: Your budget usage is getting higher.')
+    
+            elif percent<=100:
+                st.warning(':material/warning: You are getting close to your budget limit.')
+    
             else:
-                st.error("You've exceeded your monthly budget! :material/emergency:")
-
+                st.error(':material/emergency: You have exceeded your monthly budget!')
+    
+        else:
+            st.info(':material/info: Set a monthly budget in your Profile to track your spending.')
+    
         st.markdown('---')
         st.subheader(':material/pie_chart: Expense Breakdown')
-
-        data=supabase.table('expenses').select('category,amount').eq('user_id',uid).execute().data
-
+    
+        data=supabase.table('expenses').select('category,amount').eq('user_id',uid).gte('date',str(first_day)).lt('date',str(next_month)).execute().data
+    
         colors={'Food':'#FFADAD','Other':'#B0B7BD','Bills':'#FFD6A5','Education':'#A0C4FF','Health':'#CAFFBF',\
                 'Entertainment':'#FFC6FF','Shopping':'#BDB2FF','Transport':'#9BF6FF'}
-        
+    
         if data:
             df=pd.DataFrame(data)
             df=df.groupby('category',as_index=False)['amount'].sum()
             df.columns=['Category','Amount']
-
+    
             fig=px.pie(df,names='Category',values='Amount',hole=0.4,color='Category',color_discrete_map=colors)
-            fig.update_layout(title='Expense Breakdown By Category')
+            fig.update_layout(title='This Month\'s Expenses by Category')
+    
             st.plotly_chart(fig,use_container_width=True)
-
+    
         else:
-            st.info('No expense data available.')
-
+            st.info(':material/payments: No expenses recorded this month yet.')
+    
         st.markdown('---')
         st.subheader(':material/bar_chart: Monthly Expense Trend')
-
+    
         data=supabase.table('expenses').select('date,amount').eq('user_id',uid).execute().data
-
+    
         if data:
             df=pd.DataFrame(data)
-            df['Month']=pd.to_datetime(df['date']).dt.strftime('%b %Y')
+            df['date']=pd.to_datetime(df['date'])
+            df['Month']=df['date'].dt.to_period('M').dt.to_timestamp()
             df=df.groupby('Month',as_index=False)['amount'].sum()
             df.columns=['Month','Expense']
-            st.line_chart(df.set_index('Month'))
-
+    
+            df['Month Label']=df['Month'].dt.strftime('%b %Y')
+            fig=px.line(df,x='Month',y='Expense',markers=True,text='Expense')
+    
+            fig.update_layout(title='Monthly Spending Trend',xaxis_title='Month',yaxis_title='Expense (₹)')
+            fig.update_xaxes(tickmode='array',tickvals=df['Month'],ticktext=df['Month Label'])
+            st.plotly_chart(fig,use_container_width=True)
+    
         else:
-            st.info('No monthly trend yet.')
-
+            st.info(':material/payments: No expense history available yet.')
+    
         st.markdown('---')
-        st.subheader(':material/lightbulb_outline: Insight')
-
-        data=supabase.table('expenses').select('category,amount').eq('user_id',uid).execute().data
-
+        st.subheader(':material/lightbulb: Insights')
+    
+        data=supabase.table('expenses').select('category,amount').eq('user_id',uid).gte('date',str(first_day)).lt('date',str(next_month)).execute().data
+    
         if data:
-
             df=pd.DataFrame(data)
             df=df.groupby('category',as_index=False)['amount'].sum()
-            top=df.sort_values('amount',ascending=False).iloc[0]
-
-            st.success(f"Your highest spending category is {top['category']} (₹{top['amount']:,.2f})")
-
-            if total_income>0:
-                savings_rate=(savings/total_income)*100
-                st.info(f":material/money_bag: You saved {savings_rate:.1f}% of your income.")
-
-            budget_left=budget-total_expense
-
-            if budget>0:
-                st.info(f":material/my_location: Budget remaining: ₹{budget_left:,.2f}")
-
-            if total_expense>budget and budget>0:
-                st.error(':material/warning: You have exceeded your monthly budget!')
-
-            percent=(top['amount']/total_expense)*100
-            st.info(f":material/bar_chart: {percent:.1f}% of your expenses were spent on {top['category']}.")
-
-            if savings>0:
-                st.success(":material/check_box: You're spending less than you earn!")
-            else:
-                st.error(':material/warning: Expenses exceed income!')
-
+            df=df.sort_values('amount',ascending=False)
+    
+            top=df.iloc[0]
+            
+            st.success(f":material/trending_up: Your highest spending category "f"this month is **{top['category']}** "f"(₹{top['amount']:,.2f}).")
+    
+            if monthly_expense>0:
+                category_percent=(top['amount']/monthly_expense)*100
+                st.info( f":material/bar_chart: **{category_percent:.1f}%** "f"of your spending this month was on "f"**{top['category']}**.")
+    
         else:
-            st.info('Start adding expenses to get insights!')
+            st.info(':material/lightbulb: Add some expenses to generate spending insights.')
 
+    
+        if monthly_income>0:
+            monthly_savings=monthly_income-monthly_expense
+            savings_rate=(monthly_savings/monthly_income)*100
+    
+            if monthly_savings>=0:
+                st.success(f":material/savings: Your savings rate this month is "f"**{savings_rate:.1f}%**.")
+    
+            else:
+                st.error(f":material/warning: Your expenses are higher than "f"your income this month.")
+    
+        else:
+            st.info(':material/money_bag: Add income this month to calculate your savings rate.')
+    
+        if budget>0:
+            if monthly_expense>budget:
+                st.error(f":material/warning: You are "f"**₹{monthly_expense-budget:,.2f}** over your monthly budget.")
+            elif monthly_expense==budget:
+                st.warning(':material/warning: You have reached your monthly budget limit.')
+            else:
+                st.success(f":material/check_circle: You have "f"**₹{budget_remaining:,.2f}** remaining in your monthly budget.")
 
     elif menu=='Add Expense':
         st.title(':material/payments: Add Expense')
@@ -558,14 +668,19 @@ else:
         elif report_type=='Monthly Trend':
             data=supabase.table('expenses').select('date,amount').eq('user_id',uid).execute().data
 
+            data = supabase.table('expenses').select('date,amount').eq('user_id', uid).execute().data
+
             if data:
                 df=pd.DataFrame(data)
-                df['Month']=pd.to_datetime(df['date']).dt.strftime('%b %Y')
-                df=df.groupby('Month',as_index=False)['amount'].sum()
-                df.columns=['Month','Expense']
-
-                fig=px.line(df,x='Month',y='Expense',markers=True)
-                fig.update_layout(title='Monthly Spending Trend')
+                df['date']=pd.to_datetime(df['date'])
+                df['Month']=df['date'].dt.to_period('M').dt.to_timestamp()
+                df=df.groupby('Month', as_index=False)['amount'].sum()
+                df.columns=['Month', 'Expense']
+                df['Month Label']=df['Month'].dt.strftime('%b %Y')
+        
+                fig=px.line(df,x='Month',y='Expense',markers=True,text='Expense')
+                fig.update_layout(title='Monthly Spending Trend',xaxis_title='Month',yaxis_title='Expense (₹)')
+                fig.update_xaxes(tickmode='array',tickvals=df['Month'],ticktext=df['Month Label'])
                 st.plotly_chart(fig,use_container_width=True)
 
             else:
