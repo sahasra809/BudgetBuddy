@@ -26,7 +26,7 @@ st.markdown("""
 .metric-card:hover{transform:translateY(-6px);border-color:#8B5CF6;box-shadow:0 0 22px rgba(139,92,246,.35);}
 .metric-icon{font-size:32px;margin-bottom:8px;}
 .metric-title{color:#B3B3C2;font-size:16px;}
-.metric-value{color:whitefont-size:34px;font-weight:700;margin-top:10px;}
+.metric-value{color:white;font-size:34px;font-weight:700;margin-top:10px;}
 
 </style>
 """, unsafe_allow_html=True)
@@ -577,11 +577,11 @@ else:
 
     elif menu=='Reports':
         st.title(':material/bar_chart: Analytics & Summaries')
-        report_type=st.selectbox('Select Report',['Monthly Summary','Category Analysis','Income vs Expense',\
+        report_type=st.selectbox('Select Report',['Lifetime Summary','Category Analysis','Income vs Expense',\
                                           'Savings Analysis','Monthly Trend'])
         uid=st.session_state.user_id
 
-        if report_type=='Monthly Summary':
+        if report_type=='Lifetime Summary':
             income_data=supabase.table('income').select('amount').eq('user_id',uid).execute().data
             total_income=sum(float(i['amount'] or 0) for i in income_data)
             expense_data=supabase.table('expenses').select('amount').eq('user_id',uid).execute().data
@@ -667,8 +667,6 @@ else:
 
         elif report_type=='Monthly Trend':
             data=supabase.table('expenses').select('date,amount').eq('user_id',uid).execute().data
-
-            data = supabase.table('expenses').select('date,amount').eq('user_id', uid).execute().data
 
             if data:
                 df=pd.DataFrame(data)
