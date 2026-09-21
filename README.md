@@ -21,5 +21,7 @@ Technologies Used
 - Plotly
 - bcrypt
 
+Link: https://budgetbuddy-tracker.streamlit.app/
+
 Developed By
 Pocha Sahasra
